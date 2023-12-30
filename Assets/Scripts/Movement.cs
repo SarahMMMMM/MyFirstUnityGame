@@ -5,10 +5,26 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+
+
+    [Header("References")]
     public Transform _camera;
-    public float speed, rotSpeed;
-    private float rotX, rotY;
     private Rigidbody rb;
+
+
+    [Header("Configurations")]
+    public float speed, rotSpeed, jumpSpeed;
+    private float rotX, rotY;
+
+
+    [Header("Runtime")]
+    Vector3 newVelocity;
+    bool isGrounded = false;
+    bool isJumping = false;
+
+    
+    
+    
     private Vector3 offset;
     private Vector3 moveDelta;
 
@@ -30,17 +46,37 @@ public class Movement : MonoBehaviour
     void Update()
     {
         Rotate();
-      //  Move();
+        Move();
+
+        if(Input.GetKeyDown(KeyCode.Space)) 
+        {
+            Debug.Log("Jump!");
+            isJumping = true;
+        }
+    }
+
+
+
+
+
+    private void Move()
+    {
+        newVelocity = Vector3.up * rb.velocity.y;
+        //float speed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+        newVelocity.x = Input.GetAxis("Horizontal") * speed;
+        newVelocity.z = Input.GetAxis("Vertical") * speed;
     }
 
     private void FixedUpdate()
     {
         // movement with arrow keys
-        Vector3 newVelocity = Vector3.up * rb.velocity.y;
-        //float speed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
-        newVelocity.x = Input.GetAxis("Horizontal") * speed;
-        newVelocity.z = Input.GetAxis("Vertical") * speed;
         rb.velocity = transform.TransformDirection(newVelocity);
+        
+        if (isJumping)
+        {
+            GetComponent<Rigidbody>().AddForce(Vector3.up * 5, ForceMode.VelocityChange);   //this is a method
+            isJumping = false;
+        }
     }
 
     private void Rotate()
@@ -54,13 +90,5 @@ public class Movement : MonoBehaviour
         _camera.rotation = Quaternion.Euler(rotX, rotY, 0f);
     }
 
-    /* void Move()
-    {
-        
-        _camera.position = transform.position + offset;
-
-        moveDelta = transform.forward * Input.GetAxisRaw("Vertical") + transform.right * Input.GetAxisRaw("Horizontal");
-        rb.velocity = moveDelta.normalized * speed;
-    
-        } */
+   
 }
