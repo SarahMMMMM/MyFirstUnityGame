@@ -13,7 +13,7 @@ public class Movement : MonoBehaviour
 
 
     [Header("Configurations")]
-    public float speed, rotSpeed, jumpSpeed;
+    public float speed, rotSpeed;
     private float rotX, rotY;
 
 
